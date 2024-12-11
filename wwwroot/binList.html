@@ -83,7 +83,7 @@
     </nav>
     <div class="container-fluid" style="margin-top: 100px">
         <div class="col-12" style="display: flex; justify-content: center">
-            <button class="btn" onclick="AddBin()"><b>Add Bin</b></button>
+            <a class="btn" href="addBin.html" style="align-content: center; text-align: center"><b>Add Bin</b></a>
         </div>
         <br />
         <br />
@@ -92,6 +92,8 @@
         <br />
         <div class="row row-cols-1 row-cols-md-6 g-6" id="cards-container" style="display: flex; justify-content: center;"></div>
     </div>
+
+
     <!-- Footer -->
     <footer>
         <p>&copy; 2024 Smart Trash. All rights reserved.</p>
@@ -114,30 +116,32 @@
     <script>
         // Load CSV data
         function loadCSVData() {
-            fetch('./resources/database.csv')
-                .then(response => response.text())
-                .then(data => {
-                    Papa.parse(data, {
-                        header: false,
-                        skipEmptyLines: true,
-                        complete: function (results) {
-                            results.data.forEach(function (row) {
-                                const lat = parseFloat(row[1]);
-                                const lng = parseFloat(row[2]);
-                                const title = row[3] + '% - ' + row[4] + 'H' || 'No info available';
-                                const percentage = parseFloat(row[3]);
+            const storedData = localStorage.getItem('database');
 
-                                generateCard(row); // Generate card for each row
-                            });
-                        },
-                        error: function (error) {
-                            console.error('Error parsing CSV:', error);
-                        }
-                    });
-                })
-                .catch(error => {
-                    console.error('Error loading CSV:', error);
+            // Check if data exists in localStorage
+            if (storedData) {
+                // Parse the data from JSON string to JavaScript array
+                const data = JSON.parse(storedData);
+
+                // Process each row in the stored data
+                data.forEach(function (row) {
+
+                    const lat = parseFloat(row[1]);
+                    const lng = parseFloat(row[2]);
+                    const title = row[3] + '% - ' + row[4] + 'H' || 'No info available';
+                    const percentage = parseFloat(row[3]);
+
+                    generateCard(row); // Generate card for each row
                 });
+            }
+            else {
+                const message = document.createElement('p');
+                message.style.textAlign = 'center';
+                message.style.fontSize = '1.5rem';
+                message.style.fontWeight = 'bold';
+                message.textContent = 'No bins registered';
+                document.querySelector('h1').after(message);
+            }
         }
 
         // Create cards for the bins
@@ -147,15 +151,15 @@
             card.classList.add('col');
             card.dataset.id = row[0];
             card.innerHTML = `
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <img class="background-image card-img-top" style="width: 200px; height: 200px; align-items: center;" src="./resources/bin_green.png" />
-                            <h5 class="card-title" style="text-align: center;"><b>${row[3]}% - ${row[4]}H</b></h5>
-                            <p class="card-text" style="text-align: center;">Id: ${row[0]}</p>
-                            <p class="card-text" style="text-align: center;">Location: (${row[1]}, ${row[2]})</p>
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <img class="background-image card-img-top" style="width: 200px; height: 200px; align-items: center;" src="./resources/bin_green.png" />
+                                <h5 class="card-title" style="text-align: center;"><b>${row[3]}% - ${row[4]}H</b></h5>
+                                <p class="card-text" style="text-align: center;">Id: ${row[0]}</p>
+                                <p class="card-text" style="text-align: center;">Location: (${row[1]}, ${row[2]})</p>
+                            </div>
                         </div>
-                    </div>
-                `;
+                    `;
 
             cardContainer.appendChild(card);
         }

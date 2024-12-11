@@ -149,69 +149,64 @@
 
         // Load CSV data and create markers
         function loadCSVData() {
-            fetch('./resources/database.csv')
-                .then(response => response.text())
-                .then(data => {
-                    Papa.parse(data, {
-                        header: false,
-                        skipEmptyLines: true,
-                        complete: function (results) {
-                            results.data.forEach(function (row) {
-                                const lat = parseFloat(row[1]);
-                                const lng = parseFloat(row[2]);
-                                const title = row[3] + '% - ' + row[4] + 'H' || 'No info available';
-                                const percentage = parseFloat(row[3]);
+            const storedData = localStorage.getItem('database');
 
-                                // Create the marker and store it in the markers array
-                                const marker = new google.maps.Marker({
-                                    position: { lat: lat, lng: lng },
-                                    map: map,
-                                    title: title
-                                });
+            // Check if data exists in localStorage
+            if (storedData) {
+                // Parse the data from JSON string to JavaScript array
+                const data = JSON.parse(storedData);
 
-                                // Store the marker object in the markers array
-                                markers.push({ position: { lat: lat, lng: lng }, marker: marker, title: title });
+                // Process each row in the stored data
+                data.forEach(function (row) {
+                    
+                    const lat = parseFloat(row[1]); 
+                    const lng = parseFloat(row[2]); 
+                    const title = row[3] + '% - ' + row[4] + 'H' || 'No info available'; 
+                    const percentage = parseFloat(row[3]); 
 
-                                const infoWindow = new google.maps.InfoWindow({
-                                    content: `<h5>${title}</h5><p>Location: (${lat}, ${lng})</p>`
-                                });
+                    // Create the marker and store it in the markers array
+                    const marker = new google.maps.Marker({
+                        position: { lat: lat, lng: lng },
+                        map: map,
+                        title: title
+                    });
 
-                                marker.addListener('click', function () {
-                                    infoWindow.open(map, marker);
-                                });
+                    // Store the marker object in the markers array
+                    markers.push({ position: { lat: lat, lng: lng }, marker: marker, title: title });
 
-                                if (!isNaN(lat) && !isNaN(lng) && percentage >= 70) {
-                                    routeMarkers.push({ position: { lat: lat, lng: lng }, title: title });
-                                    generateCard(row);
-                                }
+                    const infoWindow = new google.maps.InfoWindow({
+                        content: `<h5>${title}</h5><p>Location: (${lat}, ${lng})</p>`
+                    });
+
+                    marker.addListener('click', function () {
+                        infoWindow.open(map, marker);
+                    });
+
+                    if (!isNaN(lat) && !isNaN(lng) && percentage >= 70) {
+                        routeMarkers.push({ position: { lat: lat, lng: lng }, title: title });
+                        generateCard(row);
+                    }
 
                                 
-                            });
-                            if (document.getElementById('cards-container').children.length === 0) {
-                                const message = document.createElement('p');
-                                message.style.textAlign = 'center';
-                                message.style.fontSize = '1.5rem';
-                                message.style.fontWeight = 'bold';
-                                message.style.color = 'green';
-                                message.textContent = 'None!';
-                                const message2 = document.createElement('p');
-                                message2.style.textAlign = 'center';
-                                message2.style.fontSize = '1.5rem';
-                                message2.style.fontWeight = 'bold';
-                                message2.style.color = 'green';
-                                message2.textContent = '"Clean and green is the perfect dream."';
-                                document.querySelector('h1').after(message2);
-                                document.querySelector('h1').after(message);
-                            }
-                        },
-                        error: function (error) {
-                            console.error('Error parsing CSV:', error);
-                        }
-                    });
-                })
-                .catch(error => {
-                    console.error('Error loading CSV:', error);
                 });
+                
+            }
+            else{
+                const message = document.createElement('p');
+                message.style.textAlign = 'center';
+                message.style.fontSize = '1.5rem';
+                message.style.fontWeight = 'bold';
+                message.style.color = 'green';
+                message.textContent = 'None!';
+                const message2 = document.createElement('p');
+                message2.style.textAlign = 'center';
+                message2.style.fontSize = '1.5rem';
+                message2.style.fontWeight = 'bold';
+                message2.style.color = 'green';
+                message2.textContent = '"Clean and green is the perfect dream."';
+                document.querySelector('h1').after(message2);
+                document.querySelector('h1').after(message);
+            }
         }
 
         // Create cards for the bins
