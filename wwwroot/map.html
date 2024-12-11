@@ -219,8 +219,7 @@
             <div class="card h-100">
                 <div class="card-body">
                     <img class="background-image card-img-top" style="width: 200px; height: 200px; align-items: center;" src="./resources/bin_green.png" />
-                    <h5 class="card-title" style="text-align: center;"><b>${row[3]}% - ${row[4]}H</b></h5>
-                    <p class="card-text" style="text-align: center;">Id: ${row[0]}</p>
+                    <h5 class="card-title" style="text-align: center;"><b>${row[0]}: ${row[3]}% - ${row[4]}H</b></h5>
                     <p class="card-text" style="text-align: center;">Location: (${row[1]}, ${row[2]})</p>
                 </div>
             </div>
@@ -248,7 +247,7 @@
             const markersToUse = selectedCards.length > 0 ? selectedCards : routeMarkers;
 
             if (markersToUse.length < 2) {
-                alert('Select at least two cards or ensure there are enough markers above 70% to plot the route!');
+                alert("There aren't enough bins needing to be picked up to require a route!");
                 return;
             }
 
@@ -272,6 +271,7 @@
                     console.error('Directions request failed due to ' + status);
                 }
             });
+            document.querySelector(".btn").innerHTML = "<b>End Route</b>";
         }
 
         // Function to end the route and reset everything
@@ -287,7 +287,7 @@
                 markerData.marker.setMap(null); // Remove the marker from the map
 
                 // Create a new marker with updated title to '0% - 0H'
-                const updatedTitle = '0% - 0H';
+                const updatedTitle = '0% - 0H'; // Default 0% and 0H for reset
                 const marker = new google.maps.Marker({
                     position: markerData.position,
                     map: map,
@@ -317,6 +317,8 @@
                     cardContainer.removeChild(cardContainer.firstChild);
                 }
             }
+
+            // If there are no cards remaining, display a message
             if (document.getElementById('cards-container').children.length === 0) {
                 const message = document.createElement('p');
                 message.style.textAlign = 'center';
@@ -334,8 +336,42 @@
                 document.querySelector('h1').after(message);
             }
 
-            const plotRouteButton = document.querySelector('.btn');
-            plotRouteButton.innerHTML = '<b>Plot Route</b>';
+            // Now update localStorage with the new marker data
+            const updatedData = markers.map(markerData => {
+                const id = markerData.marker.getTitle().split(':')[0]; // This is the id (unique identifier)
+                const lat = markerData.position.lat;
+                const lon = markerData.position.lng;
+                const percentage = 0; // Reset the percentage to 0% when ending route
+                const time = 0; // Set default time as 0 for now
+
+                return [id, lat, lon, percentage, time]; // Row format [id, lat, lon, percentage, time]
+            });
+
+            // Get the existing data from localStorage
+            let storedData = localStorage.getItem('database');
+            if (storedData) {
+                storedData = JSON.parse(storedData);
+            } else {
+                storedData = [];
+            }
+
+            // Update the stored data with the new data (based on the markers)
+            updatedData.forEach(newRow => {
+                // Find and update the existing row in localStorage using the id
+                const existingIndex = storedData.findIndex(row => row[0] === newRow[0]);
+                if (existingIndex !== -1) {
+                    // Update existing row with new data
+                    storedData[existingIndex] = newRow;
+                } else {
+                    // If not found, add as a new entry
+                    storedData.push(newRow);
+                }
+            });
+
+            // Store the updated data back in localStorage
+            localStorage.setItem('database', JSON.stringify(storedData));
+
+            document.querySelector(".btn").innerHTML = "<b>Plot Route</b>"; 
         }
 
 
@@ -343,10 +379,10 @@
         function toggleRoute() {
             if (isRoutePlotted) {
                 endRoute();
-                document.querySelector(".btn").innerHTML = "<b>Plot Route</b>"; // Change button text to "Plot Route"
+                
             } else {
                 calculateRoute();
-                document.querySelector(".btn").innerHTML = "<b>End Route</b>"; // Change button text to "End Route"
+                
             }
             isRoutePlotted = !isRoutePlotted; // Toggle the route state
         }

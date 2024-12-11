@@ -117,10 +117,21 @@
                 <input required autocomplete="off" type="text" name="lat" id="lat" />
                 <label for="lat">Latitude</label>
             </div>
+
             <div class="input-field">
                 <input required autocomplete="off" type="text" name="lon" id="lon" />
                 <label for="lon">Longitude</label>
             </div>
+            <h2>Presets:</h2>
+            <div class="input-field">
+                <input autocomplete="off" type="text" name="percentage" id="percentage" />
+                <label for="percentage">Percentage</label>
+            </div>
+            <div class="input-field">
+                <input autocomplete="off" type="text" name="time" id="time" />
+                <label for="time">Time</label>
+            </div>
+            <br />
             <button type="button" class="btn" onclick="submitForm()">Submit</button>
         </form>
     </div>
@@ -144,29 +155,41 @@
             const id = document.getElementById('Id').value;
             const lat = document.getElementById('lat').value;
             const lon = document.getElementById('lon').value;
+            const percentage = document.getElementById('percentage').value;
+            const time = document.getElementById('time').value;
 
-            // Log the data to the console to verify it's correct
-            console.log('Form Data:', { id, lat, lon });
-
-            // Create a new row of data
-            const newRow = [id, lat, lon, "0", "0"]; // Default values for the percentage and info
-
-            // Get the existing data from localStorage, or an empty array if no data exists
-            let storedData = localStorage.getItem('database');
-            if (storedData) {
-                storedData = JSON.parse(storedData);
-            } else {
-                storedData = [];
+            if (id == '' || lat == '' || lon == '') {
+                alert('Id, latitude and longitude must be filled')
             }
+            else {
+                // Log the data to the console to verify it's correct
+                console.log('Form Data:', { id, lat, lon, percentage, time });
+                if (!percentage) {
+                    percentage = 0;
+                }
+                if (!time) {
+                    time = 0;
+                }
+                // Create a new row of data
+                const newRow = [id, lat, lon, percentage, time]; // Default values for the percentage and info
 
-            // Add the new row to the existing data
-            storedData.push(newRow);
+                // Get the existing data from localStorage, or an empty array if no data exists
+                let storedData = localStorage.getItem('database');
+                if (storedData) {
+                    storedData = JSON.parse(storedData);
+                } else {
+                    storedData = [];
+                }
 
-            // Store the updated data back in localStorage
-            localStorage.setItem('database', JSON.stringify(storedData));
+                // Add the new row to the existing data
+                storedData.push(newRow);
 
-            // Redirect to a success page
-            window.location.href = 'binList.html';
+                // Store the updated data back in localStorage
+                localStorage.setItem('database', JSON.stringify(storedData));
+
+                // Redirect to a success page
+                window.location.href = 'binList.html';
+            }
         }
     </script>
 </body>
