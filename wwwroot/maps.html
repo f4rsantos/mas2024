@@ -24,11 +24,16 @@
             height: 100%;
             margin: 0;
             padding: 0;
-           
         }
+
         img.background-image.card-img-top {
             display: block;
             margin: 0 auto;
+        }
+
+        .selected-card {
+            border: 2px solid #007bff;
+            background-color: #d1ecf1;
         }
 
         .btn {
@@ -89,19 +94,14 @@
     </div>
     <br />
     <div class=" col-12" style="display:flex; justify-content: center">
-        <button class="btn" onclick="calculateRoute()"><b>Plot Route</b></button>
+        <button class="btn" onclick="handleRouteButtonClick()"><b>Plot Route</b></button>
     </div>
-    <br/>
-    <br/>
+    <br />
+    <br />
 
     <h1 style="text-align: center;"><strong>Bins to be picked up:</strong></h1>
-    <br/>
+    <br />
     <div class="row row-cols-1 row-cols-md-6 g-6" id="cards-container" style="display: flex; justify-content: center;"></div>
-
-
-
-
-
 
     <!-- Footer -->
     <footer>
@@ -132,6 +132,9 @@
         let directionsService;
         let directionsRenderer;
 
+        let selectedCards = []; // Array to store selected cards
+        let routeIsActive = false; // Track if a route is active
+
         function initMap() {
             // Define map center and zoom level
             const mapOptions = {
@@ -146,56 +149,46 @@
             directionsRenderer = new google.maps.DirectionsRenderer();
             directionsRenderer.setMap(map);
 
-            // Load the CSV file from server
+            // Load the CSV file from the server
             loadCSVData();
         }
 
         // Function to load the CSV data and add markers
         function loadCSVData() {
-            // Fetch the CSV file
             fetch('./resources/database.csv')
                 .then(response => response.text())
                 .then(data => {
-                    // Parse the CSV data using PapaParse
                     Papa.parse(data, {
-                        header: false, // If the CSV doesn't have a header
-                        skipEmptyLines: true, // Skip empty lines
+                        header: false,
+                        skipEmptyLines: true,
                         complete: function (results) {
-                            // Process each row in the CSV
                             results.data.forEach(function (row) {
-                                const lat = parseFloat(row[1]); // Latitude
-                                const lng = parseFloat(row[2]); // Longitude
-                                const id = parseFloat(row[0]);  // Id
-                                const title = row[3] + '% - ' + row[4] + 'H' || 'No info available'; // Optional title in the fourth column
+                                const lat = parseFloat(row[1]);
+                                const lng = parseFloat(row[2]);
+                                const title = row[3] + '% - ' + row[4] + 'H' || 'No info available';
                                 const percentage = parseFloat(row[3]);
 
-                                // Create marker for each row regardless of percentage
                                 const marker = new google.maps.Marker({
                                     position: { lat: lat, lng: lng },
                                     map: map,
                                     title: title
                                 });
 
-                                // Store all markers for display
-                                markers.push({ position: { lat: lat, lng: lng }, title: title });
+                                markers.push({ position: { lat: lat, lng: lng }, title: title, id: row[0], marker: marker });
 
-                                // Add an info window to each marker
                                 const infoWindow = new google.maps.InfoWindow({
-                                    content: `<h5>${title}</h5><p>Id: ${id}</p><p>Location: (${lat}, ${lng})</p>`
+                                    content: `<h5>${title}</h5><p>Location: (${lat}, ${lng})</p>`
                                 });
 
-                                // Attach click event to open the info window when the marker is clicked
                                 marker.addListener('click', function () {
                                     infoWindow.open(map, marker);
                                 });
 
-                                // If the percentage is >= 70%, include the marker in route calculation
                                 if (!isNaN(lat) && !isNaN(lng) && percentage >= 70) {
-                                    routeMarkers.push({ position: { lat: lat, lng: lng }, title: title });
-                                    generateCard(row);
+                                    routeMarkers.push({ position: { lat: lat, lng: lng }, title: title, id: row[0] });
                                 }
 
-                                
+                                generateCard(row);
                             });
                         },
                         error: function (error) {
@@ -213,34 +206,53 @@
             const cardContainer = document.getElementById('cards-container');
             const card = document.createElement('div');
             card.classList.add('col');
+            card.dataset.id = row[0]; // Store the row ID for identification
             card.innerHTML = `
-                <div class="card h-100">
-                    <div class="card-body">
-                        <img class="background-image card-img-top" style="width: 200px; height: 200px; align-items: center;" src="./resources/bin_green.png" />
-                        <h5 class="card-title" style="text-align: center;"><b>${row[3]}% - ${row[4]}H</b></h5>
-                        <p class="card-text" style="text-align: center;">Id: ${row[0]}</p>
-                        <p class="card-text" style="text-align: center;">Location: (${row[1]}, ${row[2]})</p>
-                    </div>
+            <div class="card h-100">
+                <div class="card-body">
+                    <img class="background-image card-img-top" style="width: 200px; height: 200px; align-items: center;" src="./resources/bin_green.png" />
+                    <h5 class="card-title" style="text-align: center;"><b>${row[3]}% - ${row[4]}H</b></h5>
+                    <p class="card-text" style="text-align: center;">Id: ${row[0]}</p>
+                    <p class="card-text" style="text-align: center;">Location: (${row[1]}, ${row[2]})</p>
                 </div>
-            `;
+            </div>
+        `;
+            card.addEventListener('click', function () {
+                card.classList.toggle('selected-card');
+                toggleCardSelection(row);
+            });
+
             cardContainer.appendChild(card);
         }
 
-        // Function to calculate the fastest route between the markers with percentage >= 70
+        // Function to toggle card selection and update the selectedCards array
+        function toggleCardSelection(row) {
+            const index = selectedCards.findIndex(card => card[0] === row[0]);
+            if (index !== -1) {
+                selectedCards.splice(index, 1); // Deselect
+            } else {
+                selectedCards.push(row); // Select
+            }
+        }
+
+        // Function to calculate the fastest route between the selected cards
         function calculateRoute() {
-            if (routeMarkers.length < 2) {
-                alert('Not enough valid markers (percentage >= 70%) to plot a route!');
-                return;
+            if (selectedCards.length < 2) {
+                if (routeMarkers.length < 2) {
+                    alert('No bins need to be collected currently!');
+                    return;
+                }
+                selectedCards = routeMarkers;
             }
 
-            const waypoints = routeMarkers.slice(1, routeMarkers.length - 1).map(marker => ({
-                location: marker.position,
+            const waypoints = selectedCards.slice(1, selectedCards.length - 1).map(card => ({
+                location: { lat: parseFloat(card[1]), lng: parseFloat(card[2]) },
                 stopover: true
             }));
 
             const request = {
-                origin: routeMarkers[0].position,
-                destination: routeMarkers[routeMarkers.length - 1].position,
+                origin: { lat: parseFloat(selectedCards[0][1]), lng: parseFloat(selectedCards[0][2]) },
+                destination: { lat: parseFloat(selectedCards[selectedCards.length - 1][1]), lng: parseFloat(selectedCards[selectedCards.length - 1][2]) },
                 waypoints: waypoints,
                 travelMode: google.maps.TravelMode.DRIVING,
                 optimizeWaypoints: true // This optimizes the route to find the fastest one
@@ -249,13 +261,53 @@
             directionsService.route(request, function (result, status) {
                 if (status === google.maps.DirectionsStatus.OK) {
                     directionsRenderer.setDirections(result);
+
+                    // Change button text to "End Route"
+                    document.querySelector('.btn').textContent = "End Route";
+                    routeIsActive = true;
                 } else {
                     console.error('Directions request failed due to ' + status);
                 }
             });
         }
-    </script>
 
+        // Function to end the route
+        function endRoute() {
+            // Clear the directions from the map
+            directionsRenderer.setDirections({ routes: [] });
+
+            // Update markers to reset the info (percentage and hours to 0)
+            markers.forEach(marker => {
+                if (selectedCards.some(card => card[0] === marker.id)) {
+                    // Update the info window content for the markers
+                    marker.marker.setTitle('0% - 0H');
+                    const infoWindow = new google.maps.InfoWindow({
+                        content: `<h5>0% - 0H</h5><p>Location: (${marker.position.lat}, ${marker.position.lng})</p>`
+                    });
+                    marker.marker.addListener('click', function () {
+                        infoWindow.open(map, marker.marker);
+                    });
+                }
+            });
+
+            // Remove selected cards from display
+            selectedCards.forEach(card => {
+                const cardElement = document.querySelector(`div[data-id="${card[0]}"]`);
+                if (cardElement) {
+                    cardElement.style.display = 'none';
+                }
+            });
+
+            // Reset the button text to "Plot Route"
+            document.querySelector('.btn').textContent = "Plot Route";
+
+            // Clear selected cards array and reset state
+            selectedCards = [];
+            routeIsActive = false;
+        }
+
+
+    </script>
 </body>
 
 </html>
