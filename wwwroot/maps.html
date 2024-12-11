@@ -182,9 +182,10 @@
 
                                 if (!isNaN(lat) && !isNaN(lng) && percentage >= 70) {
                                     routeMarkers.push({ position: { lat: lat, lng: lng }, title: title });
+                                    generateCard(row);
                                 }
 
-                                generateCard(row);
+                                
                             });
                             if (document.getElementById('cards-container').children.length === 0) {
                                 const message = document.createElement('p');
