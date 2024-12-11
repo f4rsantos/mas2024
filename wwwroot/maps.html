@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Trash</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="stylesheet.css">
+    <style>
+        #map {
+            height: 80%;
+        }
+
+        /* Optional: Makes the sample page fill the window. */
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html"><i class="fas fa-recycle"></i> Smart Trash</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="shop.html">Shop</a></li>
+                    <li class="nav-item"><a class="nav-link" href="map.html">Bins</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Map Display -->
+    <div style="margin-top: 50px;">
+        <div id="map"></div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Smart Trash. All rights reserved.</p>
+        <p>
+            <a href="#" class="text-decoration-none me-3"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="text-decoration-none me-3"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="text-decoration-none"><i class="fab fa-linkedin"></i></a>
+        </p>
+    </footer>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Google Maps API with the callback to initMap function -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4SkIUV4qUoBWAZ5OFe74ws0uGfoc94TM&callback=initMap&v=beta" defer></script>
+
+    <!-- PapaParse for parsing CSV -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
+    <!-- JavaScript to initialize Google Maps and load CSV data -->
+    <script>
+        let map;
+
+        function initMap() {
+            // Define map center and zoom level
+            const mapOptions = {
+                center: { lat: 40.7128, lng: -74.0060 },  // Example: New York City
+                zoom: 12
+            };
+
+            map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+            // Load the CSV file from server
+            loadCSVData();
+        }
+
+        // Function to load the CSV data from the server and add markers
+        function loadCSVData() {
+            open('./resources/database.csv')
+
+            var data = $.csv.toObjects('./resources/database.csv'):
+                
+            // Loop through each row in the CSV
+            data.forEach(function (row) {
+                const lat = parseFloat(row[1]); // Latitude is in the second column
+                const lng = parseFloat(row[2]); // Longitude is in the third column
+                const title = row[3] || 'No Title'; // Title (optional) in the fourth column
+
+                if (!isNaN(lat) && !isNaN(lng)) {
+                    // Create a marker for each row
+                    const marker = new google.maps.Marker({
+                        position: { lat: lat, lng: lng },
+                        map: map,
+                        title: title
+                    });
+
+                    // Optional: Add an info window to the marker
+                    const infoWindow = new google.maps.InfoWindow({
+                        content: `<h5>${title}</h5><p>Location: (${lat}, ${lng})</p>`
+                    });
+
+                    marker.addListener('click', function () {
+                        infoWindow.open(map, marker);
+                    });
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

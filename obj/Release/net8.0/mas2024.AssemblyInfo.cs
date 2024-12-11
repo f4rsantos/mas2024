@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("mas2024")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0365369653eedbbb06eea6edeb3741dc3b9708bc")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+169623e565605b0dde70f928e796e9879c6bfc53")]
 [assembly: System.Reflection.AssemblyProductAttribute("mas2024")]
 [assembly: System.Reflection.AssemblyTitleAttribute("mas2024")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
