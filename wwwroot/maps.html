@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Trash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome -->
@@ -12,7 +15,7 @@
     <link rel="stylesheet" href="stylesheet.css">
     <style>
         #map {
-            height: 80%;
+            height: 900px
         }
 
         /* Optional: Makes the sample page fill the window. */
@@ -21,7 +24,44 @@
             height: 100%;
             margin: 0;
             padding: 0;
+           
         }
+        img.background-image.card-img-top {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .btn {
+            width: 165px;
+            height: 62px;
+            cursor: pointer;
+            color: black;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 17px;
+            border-radius: 1rem;
+            border: none;
+            position: relative;
+            background: white;
+            transition: 0.1s;
+        }
+
+            .btn::after {
+                content: '';
+                width: 100%;
+                height: 100%;
+                background-image: radial-gradient( circle farthest-corner at 10% 20%, rgba(255,94,247,1) 17.8%, rgba(2,245,255,1) 100.2% );
+                filter: blur(15px);
+                z-index: -1;
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+
+            .btn:active {
+                transform: scale(0.9) rotate(3deg);
+                background: radial-gradient( circle farthest-corner at 10% 20%, rgba(255,94,247,1) 17.8%, rgba(2,245,255,1) 100.2% );
+                transition: 0.5s;
+            }
     </style>
 </head>
 
@@ -47,6 +87,21 @@
     <div style="margin-top: 50px;">
         <div id="map"></div>
     </div>
+    <br />
+    <div class=" col-12" style="display:flex; justify-content: center">
+        <button class="btn" onclick="calculateRoute()"><b>Plot Route</b></button>
+    </div>
+    <br/>
+    <br/>
+
+    <h1 style="text-align: center;"><strong>Bins to be picked up:</strong></h1>
+    <br/>
+    <div class="row row-cols-1 row-cols-md-6 g-6" id="cards-container" style="display: flex; justify-content: center;"></div>
+
+
+
+
+
 
     <!-- Footer -->
     <footer>
@@ -68,54 +123,139 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 
     <!-- JavaScript to initialize Google Maps and load CSV data -->
+    <script src="./lib/jquery/dist/jquery.min.js"></script>
+    <script src="./lib/knockout/dist/knockout-latest.min.js"></script>
     <script>
         let map;
+        let markers = []; // Array to store all markers (for display)
+        let routeMarkers = []; // Array to store markers included in the route calculation
+        let directionsService;
+        let directionsRenderer;
 
         function initMap() {
             // Define map center and zoom level
             const mapOptions = {
-                center: { lat: 40.7128, lng: -74.0060 },  // Example: New York City
-                zoom: 12
+                center: { lat: 40.629444, lng: -8.655833 },  // Example: New York City
+                zoom: 17
             };
 
             map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+            // Initialize directions service and renderer
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer();
+            directionsRenderer.setMap(map);
 
             // Load the CSV file from server
             loadCSVData();
         }
 
-        // Function to load the CSV data from the server and add markers
+        // Function to load the CSV data and add markers
         function loadCSVData() {
-            open('./resources/database.csv')
+            // Fetch the CSV file
+            fetch('./resources/database.csv')
+                .then(response => response.text())
+                .then(data => {
+                    // Parse the CSV data using PapaParse
+                    Papa.parse(data, {
+                        header: false, // If the CSV doesn't have a header
+                        skipEmptyLines: true, // Skip empty lines
+                        complete: function (results) {
+                            // Process each row in the CSV
+                            results.data.forEach(function (row) {
+                                const lat = parseFloat(row[1]); // Latitude
+                                const lng = parseFloat(row[2]); // Longitude
+                                const id = parseFloat(row[0]);  // Id
+                                const title = row[3] + '% - ' + row[4] + 'H' || 'No info available'; // Optional title in the fourth column
+                                const percentage = parseFloat(row[3]);
 
-            var data = $.csv.toObjects('./resources/database.csv'):
-                
-            // Loop through each row in the CSV
-            data.forEach(function (row) {
-                const lat = parseFloat(row[1]); // Latitude is in the second column
-                const lng = parseFloat(row[2]); // Longitude is in the third column
-                const title = row[3] || 'No Title'; // Title (optional) in the fourth column
+                                // Create marker for each row regardless of percentage
+                                const marker = new google.maps.Marker({
+                                    position: { lat: lat, lng: lng },
+                                    map: map,
+                                    title: title
+                                });
 
-                if (!isNaN(lat) && !isNaN(lng)) {
-                    // Create a marker for each row
-                    const marker = new google.maps.Marker({
-                        position: { lat: lat, lng: lng },
-                        map: map,
-                        title: title
+                                // Store all markers for display
+                                markers.push({ position: { lat: lat, lng: lng }, title: title });
+
+                                // Add an info window to each marker
+                                const infoWindow = new google.maps.InfoWindow({
+                                    content: `<h5>${title}</h5><p>Id: ${id}</p><p>Location: (${lat}, ${lng})</p>`
+                                });
+
+                                // Attach click event to open the info window when the marker is clicked
+                                marker.addListener('click', function () {
+                                    infoWindow.open(map, marker);
+                                });
+
+                                // If the percentage is >= 70%, include the marker in route calculation
+                                if (!isNaN(lat) && !isNaN(lng) && percentage >= 70) {
+                                    routeMarkers.push({ position: { lat: lat, lng: lng }, title: title });
+                                    generateCard(row);
+                                }
+
+                                
+                            });
+                        },
+                        error: function (error) {
+                            console.error('Error parsing CSV:', error);
+                        }
                     });
+                })
+                .catch(error => {
+                    console.error('Error loading CSV:', error);
+                });
+        }
 
-                    // Optional: Add an info window to the marker
-                    const infoWindow = new google.maps.InfoWindow({
-                        content: `<h5>${title}</h5><p>Location: (${lat}, ${lng})</p>`
-                    });
+        // Function to dynamically create a card for each row
+        function generateCard(row) {
+            const cardContainer = document.getElementById('cards-container');
+            const card = document.createElement('div');
+            card.classList.add('col');
+            card.innerHTML = `
+                <div class="card h-100">
+                    <div class="card-body">
+                        <img class="background-image card-img-top" style="width: 200px; height: 200px; align-items: center;" src="./resources/bin_green.png" />
+                        <h5 class="card-title" style="text-align: center;"><b>${row[3]}% - ${row[4]}H</b></h5>
+                        <p class="card-text" style="text-align: center;">Id: ${row[0]}</p>
+                        <p class="card-text" style="text-align: center;">Location: (${row[1]}, ${row[2]})</p>
+                    </div>
+                </div>
+            `;
+            cardContainer.appendChild(card);
+        }
 
-                    marker.addListener('click', function () {
-                        infoWindow.open(map, marker);
-                    });
+        // Function to calculate the fastest route between the markers with percentage >= 70
+        function calculateRoute() {
+            if (routeMarkers.length < 2) {
+                alert('Not enough valid markers (percentage >= 70%) to plot a route!');
+                return;
+            }
+
+            const waypoints = routeMarkers.slice(1, routeMarkers.length - 1).map(marker => ({
+                location: marker.position,
+                stopover: true
+            }));
+
+            const request = {
+                origin: routeMarkers[0].position,
+                destination: routeMarkers[routeMarkers.length - 1].position,
+                waypoints: waypoints,
+                travelMode: google.maps.TravelMode.DRIVING,
+                optimizeWaypoints: true // This optimizes the route to find the fastest one
+            };
+
+            directionsService.route(request, function (result, status) {
+                if (status === google.maps.DirectionsStatus.OK) {
+                    directionsRenderer.setDirections(result);
+                } else {
+                    console.error('Directions request failed due to ' + status);
                 }
             });
         }
     </script>
+
 </body>
 
 </html>
