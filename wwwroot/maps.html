@@ -186,6 +186,22 @@
 
                                 generateCard(row);
                             });
+                            if (document.getElementById('cards-container').children.length === 0) {
+                                const message = document.createElement('p');
+                                message.style.textAlign = 'center';
+                                message.style.fontSize = '1.5rem';
+                                message.style.fontWeight = 'bold';
+                                message.style.color = 'green';
+                                message.textContent = 'None!';
+                                const message2 = document.createElement('p');
+                                message2.style.textAlign = 'center';
+                                message2.style.fontSize = '1.5rem';
+                                message2.style.fontWeight = 'bold';
+                                message2.style.color = 'green';
+                                message2.textContent = '"Clean and green is the perfect dream."';
+                                document.querySelector('h1').after(message2);
+                                document.querySelector('h1').after(message);
+                            }
                         },
                         error: function (error) {
                             console.error('Error parsing CSV:', error);
@@ -305,8 +321,23 @@
                     cardContainer.removeChild(cardContainer.firstChild);
                 }
             }
+            if (document.getElementById('cards-container').children.length === 0) {
+                const message = document.createElement('p');
+                message.style.textAlign = 'center';
+                message.style.fontSize = '1.5rem';
+                message.style.fontWeight = 'bold';
+                message.style.color = 'green';
+                message.textContent = 'None!';
+                const message2 = document.createElement('p');
+                message2.style.textAlign = 'center';
+                message2.style.fontSize = '1.5rem';
+                message2.style.fontWeight = 'bold';
+                message2.style.color = 'green';
+                message2.textContent = '"Clean and green is the perfect dream."';
+                document.querySelector('h1').after(message2);
+                document.querySelector('h1').after(message);
+            }
 
-            // Optionally, reset the title of the button
             const plotRouteButton = document.querySelector('.btn');
             plotRouteButton.innerHTML = '<b>Plot Route</b>';
         }
