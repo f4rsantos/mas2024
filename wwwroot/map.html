@@ -161,7 +161,7 @@
                     
                     const lat = parseFloat(row[1]); 
                     const lng = parseFloat(row[2]); 
-                    const title = row[0]: row[3] + '% - ' + row[4] + 'H' || 'No info available'; 
+                    const title = row[0] +": "+ row[3] + '% - ' + row[4] + 'H' || 'No info available'; 
                     const percentage = parseFloat(row[3]); 
 
                     // Create the marker and store it in the markers array
@@ -219,7 +219,8 @@
             <div class="card h-100">
                 <div class="card-body">
                     <img class="background-image card-img-top" style="width: 200px; height: 200px; align-items: center;" src="./resources/bin_green.png" />
-                    <h5 class="card-title" style="text-align: center;"><b>${row[0]}: ${row[3]}% - ${row[4]}H</b></h5>
+                    <h5 class="card-title" style="text-align: center;"><b>${row[3]}% - ${row[4]}H</b></h5>
+                    <p class="card-text" style="text-align: center;">Id: ${row[0]}</p>
                     <p class="card-text" style="text-align: center;">Location: (${row[1]}, ${row[2]})</p>
                 </div>
             </div>
