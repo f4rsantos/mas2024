@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,11 +8,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="stylesheet.css"> 
+    <link href="stylesheet.css" rel="stylesheet" />
+    <style>
+    </style>
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+    <nav class="navbar navbar-expand-lg fixed-top border-bottom">
         <div class="container">
             <a class="navbar-brand" href="index.html"><i class="fas fa-recycle"></i> Smart Trash</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -20,20 +22,50 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="shop.html">Shop</a></li>
-                    <li class="nav-item"><a class="nav-link" href="map.html">Bins</a></li>
+                    <li class="nav-item "><a class="nav-link active" href="index.html"><i class="fa-solid fa-house"></i> Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="shop.html"><i class="fa-solid fa-shop"></i> Shop</a></li>
+                    <li class="nav-item"><a class="nav-link" href="map.html"><i class="fa-solid fa-trash"></i> Bins</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
     <!-- Main Content -->
+    <div class="container-fluid">
+        <div id="carouselExample" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="0" class="active" 
+                    aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carouselExample" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="img/suma-recolha-contentores-semi-enterrados-1.jpg" class="d-block w-100" style="height: 500px; object-fit: cover;" alt="First slide">
+                </div>
+                <div class="carousel-item">
+                    <img src="img/recolha-de-contetores-suma.jpg" class="d-block w-100" style="height: 500px; object-fit: cover;" alt="Second slide">
+                </div>
+                <div class="carousel-item">
+                    <img src="img/Campanha_Setúbal_Composto_Camiões_de_recolha_de_resíduos_orgânicos-1.jpg" class="d-block w-100" style="height: 500px; object-fit: cover;" alt="Third slide">
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+
     <main class="container mt-4">
         <div class="text-center">
             <h1>Welcome to Smart Trash</h1>
             <p class="lead">Your smart solution to managing waste effectively and sustainably.</p>
-            <a href="shop.html" class="btn btn-primary btn-lg">Buy Sensors <i class="fas fa-shopping-cart"></i></a>
+
         </div>
         <hr>
         <div class="row mt-5">
@@ -53,16 +85,37 @@
                 <p>Contribute to a cleaner environment with eco-friendly solutions.</p>
             </div>
         </div>
+
+        <hr class="my-5">
+        <!-- Caixa de texto com imagem ao lado -->
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h2>How It Works</h2>
+                <p>
+                    Smart Trash has the objective of increasing the efficiency of garbage collection paths, reducing the overall distance traveled
+                    and the amount of fuel consumed. We achieve this through the use of sensors that measure the amount of space that a bin
+                    has left, and creates a path according to these informations. The register of the bins, and the process of following the path will 
+                    be achieved thanks to the Smart Trash app: "Clean Way" .
+
+                </p>
+                <p>
+                    Smart Trash, for a cleaner life.
+                </p>
+
+            </div>
+            <div class="col-md-6 text-center">
+                <img src="img/smartTrashLogo.jpg" alt="Smart Trash Example" class="img-fluid rounded shadow">
+            </div>
+        </div>
+
+
+
     </main>
 
     <!-- Footer -->
     <footer>
         <p>&copy; 2024 Smart Trash. All rights reserved.</p>
-        <p>
-            <a href="#" class="text-decoration-none me-3"><i class="fab fa-facebook"></i></a>
-            <a href="#" class="text-decoration-none me-3"><i class="fab fa-twitter"></i></a>
-            <a href="#" class="text-decoration-none"><i class="fab fa-linkedin"></i></a>
-        </p>
+        
     </footer>
 
     <!-- Bootstrap Bundle with Popper -->
