@@ -11,6 +11,19 @@ body {
 
 .navbar-brand {
     font-weight: bold;
+    color: white
+}
+
+.navbar {
+    background-color: rgb(9, 133, 0);
+    color: white;
+    border:1px;
+    border-color: rgb(9, 133, 0) !important;
+    
+}
+
+.navbar a{
+    color: white
 }
 
 footer {
