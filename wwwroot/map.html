@@ -197,6 +197,7 @@
             }
             else {
                 const message = document.createElement('p');
+                message.id = 'cleanMessage';
                 message.style.textAlign = 'center';
                 message.style.fontSize = '1.5rem';
                 message.style.fontWeight = 'bold';
@@ -329,8 +330,9 @@
             }
 
             // If there are no cards remaining, display a message
-            if (document.getElementById('cards-container').children.length === 0) {
+            if (document.getElementById('cards-container').children.length === 0 && !document.getElementById('cleanMessage')) {
                 const message = document.createElement('p');
+                message.id = 'cleanMessage';
                 message.style.textAlign = 'center';
                 message.style.fontSize = '1.5rem';
                 message.style.fontWeight = 'bold';
