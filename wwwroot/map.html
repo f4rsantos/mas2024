@@ -93,7 +93,7 @@
     <br />
     <div class="col-12" style="display: flex; justify-content: center">
         <button class="btn" style="margin-right: 5px;" id="plotBtn" onclick="toggleRoute()"><b>Plot Route</b></button>
-        <button class="btn" style="margin-left: 5px;" id="cancelBtn" style="display: none;" onclick="cancelRoute()"><b>Cancel Route</b></button>
+        <button class="btn" style="margin-left: 5px; display: none;" id="cancelBtn" onclick="cancelRoute()"><b>Cancel Route</b></button>
     </div>
     <br />
     <br />
@@ -197,6 +197,7 @@
             }
             else {
                 const message = document.createElement('p');
+                message.id = 'cleanMessage';
                 message.style.textAlign = 'center';
                 message.style.fontSize = '1.5rem';
                 message.style.fontWeight = 'bold';
@@ -329,8 +330,9 @@
             }
 
             // If there are no cards remaining, display a message
-            if (document.getElementById('cards-container').children.length === 0) {
+            if (document.getElementById('cards-container').children.length === 0 && !document.getElementById('cleanMessage')) {
                 const message = document.createElement('p');
+                message.id = 'cleanMessage';
                 message.style.textAlign = 'center';
                 message.style.fontSize = '1.5rem';
                 message.style.fontWeight = 'bold';
