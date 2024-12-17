@@ -26,9 +26,6 @@ body {
     color: white
 }
 
-footer {
-    background-color: #f8f9fa;
-    padding: 20px 0;
-    text-align: center;
-    margin-top: 40px;
+.dropdown-menu{
+    background-color: black;
 }
