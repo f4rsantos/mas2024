@@ -68,15 +68,28 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="index.html"><i class="fas fa-recycle"></i> Smart Trash</a>
+            <a class="navbar-brand" href="indexClient.html"><i class="fas fa-recycle"></i> Smart Trash</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="index.html"><i class="fa-solid fa-house"></i> Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="shop.html"><i class="fa-solid fa-shop"></i> Shop</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="map.html"><i class="fa-solid fa-trash"></i> Bins</a></li>
+                    <li class="nav-item"><a class="nav-link" href="indexClient.html"><i class="fa-solid fa-house"></i> Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="BuySensors/Store.html"><i class="fa-solid fa-shop"></i> Shop</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="binList.html"><i class="fa-solid fa-trash"></i> Bins</a></li>
+
+                    <li class="nav-item dropdown" id="userDropdown" style="display: none;">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <span id="userName"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" onclick="logout()">Logout</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item" id="loginLink">
+                        <a class="nav-link" href="login.html"><i class="fa-solid fa-user" style="color:gold"></i> Login</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -168,6 +181,39 @@
         window.onload = function () {
             loadCSVData();
         };
+
+                // Check login status and manage navbar visibility
+                document.addEventListener("DOMContentLoaded", function() {
+            const loggedInUser = localStorage.getItem("loggedInUser");
+            if (loggedInUser) {
+                const userName = loggedInUser.substring(0, 4); // Display first 4 characters of email
+                document.getElementById("userName").textContent = userName;
+                document.getElementById("userDropdown").style.display = "block";
+                document.getElementById("loginLink").style.display = "none";
+            } else {
+                document.getElementById("userDropdown").style.display = "none";
+                document.getElementById("loginLink").style.display = "block";
+            }
+        });
+
+        // Function for logout
+        function logout() {
+            localStorage.removeItem("loggedInUser");
+            alert("Você saiu com sucesso!");
+            window.location.href = "login.html"; // Redirect to login page
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+    const fadeInElements = document.querySelectorAll('.fade-in');
+    window.addEventListener('scroll', () => {
+        fadeInElements.forEach((el) => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight * 0.9) {
+                el.classList.add('visible');
+            }
+        });
+    });
+});
     </script>
 </body>
 
