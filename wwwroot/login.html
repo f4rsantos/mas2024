@@ -174,10 +174,20 @@
                 alert("A senha deve ter pelo menos 8 caracteres.");
                 return;
             }
-
+            const loggedInUser = localStorage.getItem("loggedInUser");
             // Salva o email no LocalStorage e redireciona para a página inicial
             localStorage.setItem("loggedInUser", email);
-            window.location.href = "indexClient.html";
+            if(loggedInUser.substring(0, 4) == 'igor') //ou outro gestor, usaria db
+            {
+                window.location.href = "indexClient.html";
+            } else if(loggedInUser.substring(0, 4) == 'jose') //ou outro condutor, usaria db
+            {
+                window.location.href = "indexCondutor.html";
+            } else
+            {
+                alert("Perfil não autorizado!");
+                window.location.href = "index.html";
+            }
         });
     </script>       
 </body>
