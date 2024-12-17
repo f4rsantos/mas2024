@@ -93,7 +93,7 @@
     <br />
     <div class="col-12" style="display: flex; justify-content: center">
         <button class="btn" style="margin-right: 5px;" id="plotBtn" onclick="toggleRoute()"><b>Plot Route</b></button>
-        <button class="btn" style="margin-left: 5px;" id="cancelBtn" style="display: none;" onclick="cancelRoute()"><b>Cancel Route</b></button>
+        <button class="btn" id="cancelBtn" style="display: none; margin-left: 5px;" onclick="cancelRoute()"><b>Cancel Route</b></button>
     </div>
     <br />
     <br />
@@ -149,8 +149,29 @@
             directionsRenderer.setMap(map);
 
             loadCSVData();
+            displayNoCardsMessage();
         }
+        function displayNoCardsMessage() {
+            const cardContainer = document.getElementById('cards-container');
 
+            if (cardContainer.children.length === 0) {
+                const message = document.createElement('p');
+                message.style.textAlign = 'center';
+                message.style.fontSize = '1.5rem';
+                message.style.fontWeight = 'bold';
+                message.style.color = 'green';
+                message.textContent = 'None!';
+                const message2 = document.createElement('p');
+                message2.style.textAlign = 'center';
+                message2.style.fontSize = '1.5rem';
+                message2.style.fontWeight = 'bold';
+                message2.style.color = 'green';
+                message2.textContent = '"Clean and green is the perfect dream."';
+                const heading = document.querySelector('h1');
+                heading.after(message2);
+                heading.after(message);
+            }
+        }
         // Load CSV data and create markers
         function loadCSVData() {
             const storedData = localStorage.getItem('database');
