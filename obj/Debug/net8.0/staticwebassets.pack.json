@@ -13,12 +13,48 @@
       "PackagePath": "staticwebassets\\BuySensors\\stylesheetloja.css"
     },
     {
+      "Id": "C:\\ua\\mas\\mas2024\\projetoMas\\mas2024\\wwwroot\\addBin.html",
+      "PackagePath": "staticwebassets\\addBin.html"
+    },
+    {
+      "Id": "C:\\ua\\mas\\mas2024\\projetoMas\\mas2024\\wwwroot\\binList.html",
+      "PackagePath": "staticwebassets\\binList.html"
+    },
+    {
       "Id": "C:\\ua\\mas\\mas2024\\projetoMas\\mas2024\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },
     {
+      "Id": "C:\\ua\\mas\\mas2024\\projetoMas\\mas2024\\wwwroot\\img\\Campanha_Setúbal_Composto_Camiões_de_recolha_de_resíduos_orgânicos-1.jpg",
+      "PackagePath": "staticwebassets\\img\\Campanha_Setúbal_Composto_Camiões_de_recolha_de_resíduos_orgânicos-1.jpg"
+    },
+    {
+      "Id": "C:\\ua\\mas\\mas2024\\projetoMas\\mas2024\\wwwroot\\img\\recolha-de-contetores-suma.jpg",
+      "PackagePath": "staticwebassets\\img\\recolha-de-contetores-suma.jpg"
+    },
+    {
+      "Id": "C:\\ua\\mas\\mas2024\\projetoMas\\mas2024\\wwwroot\\img\\smartTrashLogo.jpg",
+      "PackagePath": "staticwebassets\\img\\smartTrashLogo.jpg"
+    },
+    {
+      "Id": "C:\\ua\\mas\\mas2024\\projetoMas\\mas2024\\wwwroot\\img\\suma-recolha-contentores-semi-enterrados-1.jpg",
+      "PackagePath": "staticwebassets\\img\\suma-recolha-contentores-semi-enterrados-1.jpg"
+    },
+    {
+      "Id": "C:\\ua\\mas\\mas2024\\projetoMas\\mas2024\\wwwroot\\img\\videobg.mp4",
+      "PackagePath": "staticwebassets\\img\\videobg.mp4"
+    },
+    {
       "Id": "C:\\ua\\mas\\mas2024\\projetoMas\\mas2024\\wwwroot\\index.html",
       "PackagePath": "staticwebassets\\index.html"
+    },
+    {
+      "Id": "C:\\ua\\mas\\mas2024\\projetoMas\\mas2024\\wwwroot\\indexClient.html",
+      "PackagePath": "staticwebassets\\indexClient.html"
+    },
+    {
+      "Id": "C:\\ua\\mas\\mas2024\\projetoMas\\mas2024\\wwwroot\\js\\autentic.js",
+      "PackagePath": "staticwebassets\\js\\autentic.js"
     },
     {
       "Id": "C:\\ua\\mas\\mas2024\\projetoMas\\mas2024\\wwwroot\\js\\site.js",
@@ -693,16 +729,16 @@
       "PackagePath": "staticwebassets\\lib\\knockout\\dist\\knockout-latest.min.js.map"
     },
     {
-      "Id": "C:\\ua\\mas\\mas2024\\projetoMas\\mas2024\\wwwroot\\maps.html",
-      "PackagePath": "staticwebassets\\maps.html"
+      "Id": "C:\\ua\\mas\\mas2024\\projetoMas\\mas2024\\wwwroot\\login.html",
+      "PackagePath": "staticwebassets\\login.html"
     },
     {
-      "Id": "C:\\ua\\mas\\mas2024\\projetoMas\\mas2024\\wwwroot\\resources\\bin green.png",
-      "PackagePath": "staticwebassets\\resources\\bin green.png"
+      "Id": "C:\\ua\\mas\\mas2024\\projetoMas\\mas2024\\wwwroot\\map.html",
+      "PackagePath": "staticwebassets\\map.html"
     },
     {
-      "Id": "C:\\ua\\mas\\mas2024\\projetoMas\\mas2024\\wwwroot\\resources\\database.csv",
-      "PackagePath": "staticwebassets\\resources\\database.csv"
+      "Id": "C:\\ua\\mas\\mas2024\\projetoMas\\mas2024\\wwwroot\\resources\\bin_green.png",
+      "PackagePath": "staticwebassets\\resources\\bin_green.png"
     },
     {
       "Id": "C:\\ua\\mas\\mas2024\\projetoMas\\mas2024\\wwwroot\\stylesheet.css",
