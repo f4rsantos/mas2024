@@ -149,29 +149,8 @@
             directionsRenderer.setMap(map);
 
             loadCSVData();
-            displayNoCardsMessage();
         }
-        function displayNoCardsMessage() {
-            const cardContainer = document.getElementById('cards-container');
 
-            if (cardContainer.children.length === 0) {
-                const message = document.createElement('p');
-                message.style.textAlign = 'center';
-                message.style.fontSize = '1.5rem';
-                message.style.fontWeight = 'bold';
-                message.style.color = 'green';
-                message.textContent = 'None!';
-                const message2 = document.createElement('p');
-                message2.style.textAlign = 'center';
-                message2.style.fontSize = '1.5rem';
-                message2.style.fontWeight = 'bold';
-                message2.style.color = 'green';
-                message2.textContent = '"Clean and green is the perfect dream."';
-                const heading = document.querySelector('h1');
-                heading.after(message2);
-                heading.after(message);
-            }
-        }
         // Load CSV data and create markers
         function loadCSVData() {
             const storedData = localStorage.getItem('database');
