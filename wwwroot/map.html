@@ -92,8 +92,8 @@
     </div>
     <br />
     <div class="col-12" style="display: flex; justify-content: center">
-        <button class="btn" id="plotBtn" onclick="toggleRoute()"><b>Plot Route</b></button>
-        <button class="btn" id="cancelBtn" style="display: none;" onclick="cancelRoute()"><b>Cancel Route</b></button>
+        <button class="btn" style="margin-right: 5px;" id="plotBtn" onclick="toggleRoute()"><b>Plot Route</b></button>
+        <button class="btn" style="margin-left: 5px;" id="cancelBtn" style="display: none;" onclick="cancelRoute()"><b>Cancel Route</b></button>
     </div>
     <br />
     <br />
@@ -243,7 +243,7 @@
             if (index !== -1) {
                 selectedCards.splice(index, 1); // Deselect
             } else {
-                selectedCards.push({ position: { lat: row[1], lng: row[2] }, title: (row[3] + '% - ' + row[4] + 'H' || 'No info available') }); // Select
+                selectedCards.push({ position: { lat: row[1], lng: row[2] }, title: (row[0] + ": " + row[3] + '% - ' + row[4] + 'H' || 'No info available') }); // Select
             }
         }
 
@@ -255,29 +255,32 @@
                 alert("There aren't enough bins needing to be picked up to require a route!");
                 return;
             }
-
-            const waypoints = markersToUse.slice(1, markersToUse.length - 1).map(marker => ({
+            else{
+                const waypoints = markersToUse.slice(1, markersToUse.length - 1).map(marker => ({
                 location: { lat: parseFloat(marker.position.lat), lng: parseFloat(marker.position.lng) },
                 stopover: true
-            }));
+                }));
 
-            const request = {
-                origin: { lat: parseFloat(markersToUse[0].position.lat), lng: parseFloat(markersToUse[0].position.lng) },
-                destination: { lat: parseFloat(markersToUse[markersToUse.length - 1].position.lat), lng: parseFloat(markersToUse[markersToUse.length - 1].position.lng) },
-                waypoints: waypoints,
-                travelMode: google.maps.TravelMode.DRIVING,
-                optimizeWaypoints: true
-            };
+                const request = {
+                    origin: { lat: parseFloat(markersToUse[0].position.lat), lng: parseFloat(markersToUse[0].position.lng) },
+                    destination: { lat: parseFloat(markersToUse[markersToUse.length - 1].position.lat), lng: parseFloat(markersToUse[markersToUse.length - 1].position.lng) },
+                    waypoints: waypoints,
+                    travelMode: google.maps.TravelMode.DRIVING,
+                    optimizeWaypoints: true
+                };
 
-            directionsService.route(request, function (result, status) {
-                if (status === google.maps.DirectionsStatus.OK) {
-                    directionsRenderer.setDirections(result);
-                } else {
-                    console.error('Directions request failed due to ' + status);
-                }
-            });
-            document.querySelector("#plotBtn").innerHTML = "<b>End Route</b>";
-            document.querySelector("#cancelBtn").style.display = "block";
+                directionsService.route(request, function (result, status) {
+                    if (status === google.maps.DirectionsStatus.OK) {
+                        directionsRenderer.setDirections(result);
+                    } else {
+                        console.error('Directions request failed due to ' + status);
+                    }
+                });
+                document.querySelector("#plotBtn").innerHTML = "<b>End Route</b>";
+                document.querySelector("#cancelBtn").style.display = "block";
+            }
+
+           
         }
 
         // Function to end the route and reset everything
@@ -290,10 +293,11 @@
 
             // Clear all markers from the map and reset them
             markers.forEach(markerData => {
+                id = markerData.getTitle();
                 markerData.marker.setMap(null); // Remove the marker from the map
 
                 // Create a new marker with updated title to '0% - 0H'
-                const updatedTitle = '0% - 0H'; // Default 0% and 0H for reset
+                const updatedTitle = `${id}: 0% - 0H`; // Default 0% and 0H for reset
                 const marker = new google.maps.Marker({
                     position: markerData.position,
                     map: map,
