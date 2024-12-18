@@ -379,9 +379,11 @@
         // Toggle the route button text and state
         function toggleRoute() {
             if (isRoutePlotted) {
+                console.log("end");
                 endRoute();
 
             } else {
+                console.log("start");
                 calculateRoute();
 
             }

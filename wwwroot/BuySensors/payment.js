@@ -12,8 +12,8 @@ quantityInput.addEventListener('input', function () {
     const total = (quantity * pricePerUnit).toFixed(2);
 
     quantityDisplay.textContent = quantity;
-    totalPrice.textContent = `$${total}`;
-    totalPriceSummary.textContent = `$${total}`;
+    totalPrice.textContent = `${total}€`;
+    totalPriceSummary.textContent = `${total}€`;
 });
 
 // Generate unique bin IDs based on quantity
