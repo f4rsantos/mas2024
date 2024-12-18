@@ -169,7 +169,7 @@
                     });
 
                     if (!isNaN(lat) && !isNaN(lng) && (percentage >= 70 || time >= 24)) {
-                        routeMarkers.push({ position: { lat: lat, lng: lng }, title: title });
+                        markers.push({ position: { lat: lat, lng: lng }, marker: marker, title: title });
                         generateCard(row);
                     }
 
