@@ -276,7 +276,7 @@
 
             // Clear all markers from the map and reset them
             routeMarkers.forEach(markerData => {
-                id = markerData.marker.getTitle();
+                id = markerData.marker.getTitle().split(':')[0];
                 markerData.marker.setMap(null); // Remove the marker from the map
 
                 // Create a new marker with updated title to '0% - 0H'
@@ -341,7 +341,7 @@
 
                 return [id, lat, lon, percentage, time]; // Row format [id, lat, lon, percentage, time]
             });
-            routeMarkers = [];
+            
             // Get the existing data from localStorage
             let storedData = localStorage.getItem('database');
             if (storedData) {
@@ -365,7 +365,7 @@
 
             // Store the updated data back in localStorage
             localStorage.setItem('database', JSON.stringify(storedData));
-
+            routeMarkers = [];
             document.querySelector("#plotBtn").innerHTML = "<b>Plot Route</b>";
             document.querySelector("#cancelBtn").style.display = "none";
         }
