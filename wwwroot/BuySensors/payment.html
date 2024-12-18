@@ -78,7 +78,7 @@
                         </div>
                         <div class="d-flex justify-content-between">
                             <span>Total Price:</span>
-                            <strong id="totalPrice">$59.99</strong>
+                            <strong id="totalPrice">59.99€</strong>
                         </div>
                     </div>
 
@@ -111,9 +111,9 @@
                         <h5>Order Details</h5>
                         <hr>
                         <p><strong>Product:</strong> Compact Smart Sensor</p>
-                        <p><strong>Price per unit:</strong> $59.99</p>
+                        <p><strong>Price per unit:</strong> 59.99€</p>
                         <p><strong>Quantity:</strong> <span id="quantityDisplay">1</span></p>
-                        <p><strong>Total:</strong> <span id="totalPriceSummary">$59.99</span></p>
+                        <p><strong>Total:</strong> <span id="totalPriceSummary">59.99€</span></p>
                     </div>
                 </div>
             </div>
@@ -142,8 +142,8 @@
             const total = (quantity * pricePerUnit).toFixed(2);
 
             quantityDisplay.textContent = quantity;
-            totalPrice.textContent = `$${total}`;
-            totalPriceSummary.textContent = `$${total}`;
+            totalPrice.textContent = `${total}€`;
+            totalPriceSummary.textContent = `${total}€`;
         });
 
         
