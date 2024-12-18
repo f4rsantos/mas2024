@@ -276,7 +276,7 @@
 
             // Clear all markers from the map and reset them
             markers.forEach(markerData => {
-                id = markerData.getTitle();
+                id = markerData.marker.getTitle();
                 markerData.marker.setMap(null); // Remove the marker from the map
 
                 // Create a new marker with updated title to '0% - 0H'
