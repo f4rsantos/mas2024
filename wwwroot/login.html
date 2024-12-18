@@ -153,41 +153,39 @@
             }
         });
 
-        // Evento de submit do formulário
         document.getElementById('loginForm').addEventListener('submit', function (event) {
-            event.preventDefault(); // Impede o envio do formulário padrão
+    event.preventDefault(); // Impede o envio do formulário padrão
 
-            // Obtém os valores de email e senha
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
+    // Obtém os valores de email e senha
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
 
-            // Verifica se o email é válido
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                alert("Por favor, insira um e-mail válido.");
-                return;
-            }
+    // Verifica se o email é válido
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        alert("Por favor, insira um e-mail válido.");
+        return;
+    }
 
-            // Verifica se a senha tem pelo menos 8 caracteres
-            if (password.length < 8) {
-                alert("A senha deve ter pelo menos 8 caracteres.");
-                return;
-            }
-            const loggedInUser = localStorage.getItem("loggedInUser");
-            // Salva o email no LocalStorage e redireciona para a página inicial
-            localStorage.setItem("loggedInUser", email);
-            if(loggedInUser.substring(0, 4) == 'igor') //ou outro gestor, usaria db
-            {
-                window.location.href = "indexClient.html";
-            } else if(loggedInUser.substring(0, 4) == 'jose') //ou outro condutor, usaria db
-            {
-                window.location.href = "indexCondutor.html";
-            } else
-            {
-                alert("Perfil não autorizado!");
-                window.location.href = "index.html";
-            }
-        });
+    // Verifica se a senha tem pelo menos 8 caracteres
+    if (password.length < 8) {
+        alert("A senha deve ter pelo menos 8 caracteres.");
+        return;
+    }
+
+    // Salva o email no LocalStorage
+    localStorage.setItem("loggedInUser", email);
+
+    // Usa o email diretamente para determinar a navegação
+    if (email.substring(0, 4) == 'igor') { 
+        window.location.href = "indexClient.html";
+    } else if (email.substring(0, 4) == 'jose') { 
+        window.location.href = "indexCondutor.html";
+    } else {
+        alert("Perfil não autorizado!");
+        window.location.href = "index.html";
+    }
+});
     </script>       
 </body>
 </html>
