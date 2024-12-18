@@ -268,106 +268,110 @@
 
         // Function to end the route and reset everything
         function endRoute() {
-            // Clear the selected cards array and remove selected card styles
-            selectedCards = [];
-            document.querySelectorAll('.selected-card').forEach(card => {
-                card.classList.remove('selected-card'); // Remove selection style
-            });
+    // Clear the selected cards array and remove selected card styles
+    selectedCards = [];
+    document.querySelectorAll('.selected-card').forEach(card => {
+        card.classList.remove('selected-card'); // Remove selection style
+    });
 
-            // Clear all markers from the map and reset them
-            markers.forEach(markerData => {
-                id = markerData.marker.getTitle();
-                markerData.marker.setMap(null); // Remove the marker from the map
+    // Clear all markers from the map and reset them
+    routeMarkers = routeMarkers.filter(markerData => {
+        const id = markerData.marker.getTitle();
+        markerData.marker.setMap(null); // Remove the marker from the map
 
-                // Create a new marker with updated title to '0% - 0H'
-                const updatedTitle = `${id}: 0% - 0H`; // Default 0% and 0H for reset
-                const marker = new google.maps.Marker({
-                    position: markerData.position,
-                    map: map,
-                    title: updatedTitle
-                });
+        // Create a new marker with updated title to '0% - 0H'
+        const updatedTitle = `${id.split(':')[0]}: 0% - 0H`; // Default 0% and 0H for reset
+        const marker = new google.maps.Marker({
+            position: markerData.position,
+            map: map,
+            title: updatedTitle
+        });
 
-                // Update the marker reference in the markers array
-                markerData.marker = marker;
+        // Update the marker reference in the markers array
+        markerData.marker = marker;
 
-                const infoWindow = new google.maps.InfoWindow({
-                    content: `<h5>${updatedTitle}</h5><p>Location: (${markerData.position.lat}, ${markerData.position.lng})</p>`
-                });
+        const infoWindow = new google.maps.InfoWindow({
+            content: `<h5>${updatedTitle}</h5><p>Location: (${markerData.position.lat}, ${markerData.position.lng})</p>`
+        });
 
-                marker.addListener('click', function () {
-                    infoWindow.open(map, marker);
-                });
-            });
+        marker.addListener('click', function () {
+            infoWindow.open(map, marker);
+        });
 
-            // Clear the route from the map
-            directionsRenderer.setDirections({ routes: [] });
+        // Return false to remove this marker from routeMarkers
+        return false; 
+    });
 
-            // Check if there are no selected cards
-            if (selectedCards.length === 0) {
-                // If no selected cards, it means all cards have been used. Delete all cards.
-                const cardContainer = document.getElementById('cards-container');
-                while (cardContainer.firstChild) {
-                    cardContainer.removeChild(cardContainer.firstChild);
-                }
-            }
+    // Clear the route from the map
+    directionsRenderer.setDirections({ routes: [] });
 
-            // If there are no cards remaining, display a message
-            if (document.getElementById('cards-container').children.length === 0 && !document.getElementById('cleanMessage')) {
-                const message = document.createElement('p');
-                message.id = 'cleanMessage';
-                message.style.textAlign = 'center';
-                message.style.fontSize = '1.5rem';
-                message.style.fontWeight = 'bold';
-                message.style.color = 'green';
-                message.textContent = 'None!';
-                const message2 = document.createElement('p');
-                message2.style.textAlign = 'center';
-                message2.style.fontSize = '1.5rem';
-                message2.style.fontWeight = 'bold';
-                message2.style.color = 'green';
-                message2.textContent = '"Clean and green is the perfect dream."';
-                document.querySelector('h1').after(message2);
-                document.querySelector('h1').after(message);
-            }
-
-            // Now update localStorage with the new marker data
-            const updatedData = markers.map(markerData => {
-                const id = markerData.marker.getTitle().split(':')[0]; // This is the id (unique identifier)
-                const lat = markerData.position.lat;
-                const lon = markerData.position.lng;
-                const percentage = 0; // Reset the percentage to 0% when ending route
-                const time = 0; // Set default time as 0 for now
-
-                return [id, lat, lon, percentage, time]; // Row format [id, lat, lon, percentage, time]
-            });
-
-            // Get the existing data from localStorage
-            let storedData = localStorage.getItem('database');
-            if (storedData) {
-                storedData = JSON.parse(storedData);
-            } else {
-                storedData = [];
-            }
-
-            // Update the stored data with the new data (based on the markers)
-            updatedData.forEach(newRow => {
-                // Find and update the existing row in localStorage using the id
-                const existingIndex = storedData.findIndex(row => row[0] === newRow[0]);
-                if (existingIndex !== -1) {
-                    // Update existing row with new data
-                    storedData[existingIndex] = newRow;
-                } else {
-                    // If not found, add as a new entry
-                    storedData.push(newRow);
-                }
-            });
-
-            // Store the updated data back in localStorage
-            localStorage.setItem('database', JSON.stringify(storedData));
-
-            document.querySelector("#plotBtn").innerHTML = "<b>Plot Route</b>";
-            document.querySelector("#cancelBtn").style.display = "none";
+    // Check if there are no selected cards
+    if (selectedCards.length === 0) {
+        // If no selected cards, it means all cards have been used. Delete all cards.
+        const cardContainer = document.getElementById('cards-container');
+        while (cardContainer.firstChild) {
+            cardContainer.removeChild(cardContainer.firstChild);
         }
+    }
+
+    // If there are no cards remaining, display a message
+    if (document.getElementById('cards-container').children.length === 0 && !document.getElementById('cleanMessage')) {
+        const message = document.createElement('p');
+        message.id = 'cleanMessage';
+        message.style.textAlign = 'center';
+        message.style.fontSize = '1.5rem';
+        message.style.fontWeight = 'bold';
+        message.style.color = 'green';
+        message.textContent = 'None!';
+        const message2 = document.createElement('p');
+        message2.style.textAlign = 'center';
+        message2.style.fontSize = '1.5rem';
+        message2.style.fontWeight = 'bold';
+        message2.style.color = 'green';
+        message2.textContent = '"Clean and green is the perfect dream."';
+        document.querySelector('h1').after(message2);
+        document.querySelector('h1').after(message);
+    }
+
+    // Now update localStorage with the new marker data
+    const updatedData = routeMarkers.map(markerData => {
+        const id = markerData.marker.getTitle().split(':')[0]; // This is the id (unique identifier)
+        const lat = markerData.position.lat;
+        const lon = markerData.position.lng;
+        const percentage = 0; // Reset the percentage to 0% when ending route
+        const time = 0; // Set default time as 0 for now
+
+        return [id, lat, lon, percentage, time]; // Row format [id, lat, lon, percentage, time]
+    });
+
+    // Get the existing data from localStorage
+    let storedData = localStorage.getItem('database');
+    if (storedData) {
+        storedData = JSON.parse(storedData);
+    } else {
+        storedData = [];
+    }
+
+    // Update the stored data with the new data (based on the markers)
+    updatedData.forEach(newRow => {
+        // Find and update the existing row in localStorage using the id
+        const existingIndex = storedData.findIndex(row => row[0] === newRow[0]);
+        if (existingIndex !== -1) {
+            // Update existing row with new data
+            storedData[existingIndex] = newRow;
+        } else {
+            // If not found, add as a new entry
+            storedData.push(newRow);
+        }
+    });
+
+    // Store the updated data back in localStorage
+    localStorage.setItem('database', JSON.stringify(storedData));
+
+    document.querySelector("#plotBtn").innerHTML = "<b>Plot Route</b>";
+    document.querySelector("#cancelBtn").style.display = "none";
+}
+
         function cancelRoute() {
 
             directionsRenderer.setDirections({ routes: [] });
