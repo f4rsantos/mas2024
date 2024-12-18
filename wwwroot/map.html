@@ -275,12 +275,12 @@
             });
 
             // Clear all markers from the map and reset them
-            routeMarkers = routeMarkers.filter(markerData => {
-                const id = markerData.marker.getTitle();
+            routeMarkers.forEach(markerData => {
+                id = markerData.marker.getTitle();
                 markerData.marker.setMap(null); // Remove the marker from the map
 
                 // Create a new marker with updated title to '0% - 0H'
-                const updatedTitle = `${id.split(':')[0]}: 0% - 0H`; // Default 0% and 0H for reset
+                const updatedTitle = `${id}: 0% - 0H`; // Default 0% and 0H for reset
                 const marker = new google.maps.Marker({
                     position: markerData.position,
                     map: map,
@@ -297,11 +297,9 @@
                 marker.addListener('click', function () {
                     infoWindow.open(map, marker);
                 });
-
-                // Return false to remove this marker from routeMarkers
-                return false; 
             });
 
+            
             // Clear the route from the map
             directionsRenderer.setDirections({ routes: [] });
 
@@ -343,7 +341,7 @@
 
                 return [id, lat, lon, percentage, time]; // Row format [id, lat, lon, percentage, time]
             });
-
+            routeMarkers = [];
             // Get the existing data from localStorage
             let storedData = localStorage.getItem('database');
             if (storedData) {
@@ -371,7 +369,6 @@
             document.querySelector("#plotBtn").innerHTML = "<b>Plot Route</b>";
             document.querySelector("#cancelBtn").style.display = "none";
         }
-
         function cancelRoute() {
 
             directionsRenderer.setDirections({ routes: [] });
