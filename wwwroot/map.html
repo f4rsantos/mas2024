@@ -169,7 +169,7 @@
                     });
 
                     if (!isNaN(lat) && !isNaN(lng) && (percentage >= 70 || time >= 24)) {
-                        markers.push({ position: { lat: lat, lng: lng }, marker: marker, title: title });
+                        routeMarkers.push({ position: { lat: lat, lng: lng }, marker: marker, title: title });
                         generateCard(row);
                     }
 
@@ -270,10 +270,11 @@
         function endRoute() {
             // Clear the selected cards array and remove selected card styles
             selectedCards = [];
+
             document.querySelectorAll('.selected-card').forEach(card => {
                 card.classList.remove('selected-card'); // Remove selection style
             });
-
+            
             // Clear all markers from the map and reset them
             routeMarkers.forEach(markerData => {
                 id = markerData.marker.getTitle().split(':')[0];
@@ -298,7 +299,7 @@
                     infoWindow.open(map, marker);
                 });
             });
-
+            
             
             // Clear the route from the map
             directionsRenderer.setDirections({ routes: [] });
@@ -334,6 +335,8 @@
             // Now update localStorage with the new marker data
             const updatedData = routeMarkers.map(markerData => {
                 const id = markerData.marker.getTitle().split(':')[0]; // This is the id (unique identifier)
+                
+                
                 const lat = markerData.position.lat;
                 const lon = markerData.position.lng;
                 const percentage = 0; // Reset the percentage to 0% when ending route
@@ -350,7 +353,9 @@
                 storedData = [];
             }
 
+            
             // Update the stored data with the new data (based on the markers)
+            
             updatedData.forEach(newRow => {
                 // Find and update the existing row in localStorage using the id
                 const existingIndex = storedData.findIndex(row => row[0] === newRow[0]);
