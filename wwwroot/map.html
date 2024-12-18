@@ -148,6 +148,7 @@
                     const lng = parseFloat(row[2]);
                     const title = row[0] + ": " + row[3] + '% - ' + row[4] + 'H' || 'No info available';
                     const percentage = parseFloat(row[3]);
+                    const time = parseFloat(row[4]);
 
                     // Create the marker and store it in the markers array
                     const marker = new google.maps.Marker({
@@ -167,7 +168,7 @@
                         infoWindow.open(map, marker);
                     });
 
-                    if (!isNaN(lat) && !isNaN(lng) && percentage >= 70) {
+                    if (!isNaN(lat) && !isNaN(lng) && (percentage >= 70 || time >= 24)) {
                         routeMarkers.push({ position: { lat: lat, lng: lng }, title: title });
                         generateCard(row);
                     }
