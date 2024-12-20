@@ -23,7 +23,11 @@
             display: block;
             margin: 0 auto;
         }
-    
+
+        #map {
+            height: 900px
+        }
+
         .card-body {
             display: flex;
             flex-direction: column;
@@ -63,6 +67,9 @@
             </div>
         </div>
     </nav>
+    <div style="margin-top: 50px;">
+        <div id="map"></div>
+    </div>
     <div class="container-fluid" style="margin-top: 100px">
         <div class="col-12" style="display: flex; justify-content: center">
             <a class="btn" style="background-color: #198754; color: white; margin-right: 5px" href="addBin.html" style="align-content: center; text-align: center"><b>Add Bin</b></a>
@@ -89,6 +96,7 @@
 
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4SkIUV4qUoBWAZ5OFe74ws0uGfoc94TM&callback=initMap&v=beta" defer></script>
 
     <!-- PapaParse for parsing CSV -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
@@ -97,6 +105,30 @@
     <script src="./lib/jquery/dist/jquery.min.js"></script>
     <script src="./lib/knockout/dist/knockout-latest.min.js"></script>
     <script>
+        let map;
+        let markers = []; // Array to store all markers (for display)
+        let routeMarkers = []; // Array to store markers included in route calculation
+        let directionsService;
+        let directionsRenderer;
+        let selectedCards = []; // Array to store selected cards
+        let isRoutePlotted = false; // Flag to track the route state
+
+        // Initialize the map
+        function initMap() {
+            const mapOptions = {
+                center: { lat: 40.629444, lng: -8.655833 },  // Example: New York City
+                zoom: 17
+            };
+
+            map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer();
+            directionsRenderer.setMap(map);
+
+            loadCSVData();
+        }
+
         // Load CSV data
         function loadCSVData() {
             const storedData = localStorage.getItem('database');
@@ -113,18 +145,32 @@
                     const lng = parseFloat(row[2]);
                     const title = row[0] + ": " + row[3] + '% - ' + row[4] + 'H' || 'No info available';
                     const percentage = parseFloat(row[3]);
+                    const time = parseFloat(row[4]);
 
+                    // Create the marker and store it in the markers array
+                    const marker = new google.maps.Marker({
+                        position: { lat: lat, lng: lng },
+                        map: map,
+                        title: title
+                    });
+
+                    // Store the marker object in the markers array
+                    markers.push({ position: { lat: lat, lng: lng }, marker: marker, title: title });
+
+                    const infoWindow = new google.maps.InfoWindow({
+                        content: `<h5>${title}</h5><p>Location: (${lat}, ${lng})</p>`
+                    });
+
+                    marker.addListener('click', function () {
+                        infoWindow.open(map, marker);
+                    });
                     generateCard(row); // Generate card for each row
+
+
                 });
+
             }
-            else {
-                const message = document.createElement('p');
-                message.style.textAlign = 'center';
-                message.style.fontSize = '1.5rem';
-                message.style.fontWeight = 'bold';
-                message.textContent = 'No bins registered';
-                document.querySelector('h1').after(message);
-            }
+            
         }
 
         // Create cards for the bins
@@ -146,11 +192,6 @@
 
             cardContainer.appendChild(card);
         }
-
-        // Call the function to load CSV data when the page is loaded
-        window.onload = function () {
-            loadCSVData();
-        };
 
                 // Check login status and manage navbar visibility
                 document.addEventListener("DOMContentLoaded", function() {
