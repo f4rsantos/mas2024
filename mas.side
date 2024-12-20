@@ -1,0 +1,105 @@
+{
+  "id": "e9de4994-15d7-466d-9b09-83dae485dc62",
+  "version": "2.0",
+  "name": "mas",
+  "url": "http://127.0.0.1:5500",
+  "tests": [{
+    "id": "4e8799a4-d7f8-4d7a-ae21-885b66418650",
+    "name": "login cliente",
+    "commands": [{
+      "id": "59033966-001f-449b-aa2d-97994ec028ec",
+      "comment": "",
+      "command": "open",
+      "target": "/wwwroot/index.html",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "55926c67-e59c-4a32-9583-c7d16df0e2bb",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1454x866",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "b4dd3a21-e77a-402b-b00f-b4146d56a920",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Login",
+      "targets": [
+        ["linkText=Login", "linkText"],
+        ["css=#loginLink > .nav-link", "css:finder"],
+        ["xpath=//a[contains(text(),'Login')]", "xpath:link"],
+        ["xpath=//li[@id='loginLink']/a", "xpath:idRelative"],
+        ["xpath=//a[contains(@href, 'login.html')]", "xpath:href"],
+        ["xpath=//li[3]/a", "xpath:position"],
+        ["xpath=//a[contains(.,' Login')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "3b79e754-417d-415d-9486-4189d8d772c4",
+      "comment": "",
+      "command": "click",
+      "target": "id=email",
+      "targets": [
+        ["id=email", "id"],
+        ["name=email", "name"],
+        ["css=#email", "css:finder"],
+        ["xpath=//input[@id='email']", "xpath:attributes"],
+        ["xpath=//form[@id='loginForm']/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "94f85f8d-95bc-42a9-9000-1bcc01cbce77",
+      "comment": "",
+      "command": "type",
+      "target": "id=email",
+      "targets": [
+        ["id=email", "id"],
+        ["name=email", "name"],
+        ["css=#email", "css:finder"],
+        ["xpath=//input[@id='email']", "xpath:attributes"],
+        ["xpath=//form[@id='loginForm']/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "igor@cma.pt"
+    }, {
+      "id": "045c673e-2fc4-42a2-ba12-d7c1e26c331c",
+      "comment": "",
+      "command": "type",
+      "target": "id=password",
+      "targets": [
+        ["id=password", "id"],
+        ["name=password", "name"],
+        ["css=#password", "css:finder"],
+        ["xpath=//input[@id='password']", "xpath:attributes"],
+        ["xpath=//form[@id='loginForm']/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "testpassword"
+    }, {
+      "id": "2d1b7f61-4b29-45e7-abd1-93b26ed7f285",
+      "comment": "",
+      "command": "click",
+      "target": "css=.btn",
+      "targets": [
+        ["css=.btn", "css:finder"],
+        ["xpath=//button[@type='submit']", "xpath:attributes"],
+        ["xpath=//form[@id='loginForm']/button", "xpath:idRelative"],
+        ["xpath=//form/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Entrar')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "17616a08-8718-40a1-b20c-b973b403542a",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["4e8799a4-d7f8-4d7a-ae21-885b66418650"]
+  }],
+  "urls": ["http://127.0.0.1:5500/"],
+  "plugins": []
+}
