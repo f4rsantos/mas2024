@@ -41,7 +41,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="index.html"><i class="fas fa-recycle"></i> Smart Trash</a>
+            <a class="navbar-brand" href="indexClient.html"><i class="fas fa-recycle"></i> Smart Trash</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -50,6 +50,7 @@
                     <li class="nav-item"><a class="nav-link" href="indexCondutor.html"><i class="fa-solid fa-house"></i> Home</a></li>
                     
                     <li class="nav-item "><a class="nav-link active" href="map.html"><i class="fa-solid fa-trash"></i> Bins</a></li>
+                    
                     <li class="nav-item dropdown" id="userDropdown" style="display: none;">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
                             <span id="userName"></span>
@@ -169,7 +170,7 @@
                     });
 
                     if (!isNaN(lat) && !isNaN(lng) && (percentage >= 70 || time >= 24)) {
-                        routeMarkers.push({ position: { lat: lat, lng: lng }, title: title });
+                        routeMarkers.push({ position: { lat: lat, lng: lng }, marker: marker, title: title });
                         generateCard(row);
                     }
 
@@ -270,17 +271,18 @@
         function endRoute() {
             // Clear the selected cards array and remove selected card styles
             selectedCards = [];
+
             document.querySelectorAll('.selected-card').forEach(card => {
                 card.classList.remove('selected-card'); // Remove selection style
             });
-
+            
             // Clear all markers from the map and reset them
-            routeMarkers = routeMarkers.filter(markerData => {
-                const id = markerData.marker.getTitle();
+            routeMarkers.forEach(markerData => {
+                id = markerData.marker.getTitle().split(':')[0];
                 markerData.marker.setMap(null); // Remove the marker from the map
 
                 // Create a new marker with updated title to '0% - 0H'
-                const updatedTitle = `${id.split(':')[0]}: 0% - 0H`; // Default 0% and 0H for reset
+                const updatedTitle = `${id}: 0% - 0H`; // Default 0% and 0H for reset
                 const marker = new google.maps.Marker({
                     position: markerData.position,
                     map: map,
@@ -297,11 +299,9 @@
                 marker.addListener('click', function () {
                     infoWindow.open(map, marker);
                 });
-
-                // Return false to remove this marker from routeMarkers
-                return false; 
             });
-
+            
+            
             // Clear the route from the map
             directionsRenderer.setDirections({ routes: [] });
 
@@ -336,6 +336,8 @@
             // Now update localStorage with the new marker data
             const updatedData = routeMarkers.map(markerData => {
                 const id = markerData.marker.getTitle().split(':')[0]; // This is the id (unique identifier)
+                
+                
                 const lat = markerData.position.lat;
                 const lon = markerData.position.lng;
                 const percentage = 0; // Reset the percentage to 0% when ending route
@@ -343,7 +345,7 @@
 
                 return [id, lat, lon, percentage, time]; // Row format [id, lat, lon, percentage, time]
             });
-
+            
             // Get the existing data from localStorage
             let storedData = localStorage.getItem('database');
             if (storedData) {
@@ -352,7 +354,9 @@
                 storedData = [];
             }
 
+            
             // Update the stored data with the new data (based on the markers)
+            
             updatedData.forEach(newRow => {
                 // Find and update the existing row in localStorage using the id
                 const existingIndex = storedData.findIndex(row => row[0] === newRow[0]);
@@ -367,11 +371,10 @@
 
             // Store the updated data back in localStorage
             localStorage.setItem('database', JSON.stringify(storedData));
-
+            routeMarkers = [];
             document.querySelector("#plotBtn").innerHTML = "<b>Plot Route</b>";
             document.querySelector("#cancelBtn").style.display = "none";
         }
-
         function cancelRoute() {
 
             directionsRenderer.setDirections({ routes: [] });
